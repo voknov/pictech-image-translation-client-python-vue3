@@ -74,7 +74,7 @@
 - **POST /api/translate/save**：保存编辑器当前画布状态。
 - **POST /api/translate/uploadExportedImage**：接收并保存前端导出的最终图片，建议定期清理。
 - **GET /api/translate/result/{requestId}**：查询指定翻译任务的处理结果。
-- **POST /api/translate/iopaint**：请求擦除服务，消耗一个积分。
+- **POST /api/translate/iopaint**：请求擦除服务，每5次消耗一个积分。
 - **POST /api/translate/uploadIoInpaintImage**：保存擦除操作的中间结果，建议定期清理。
 
 ## 🚀 运行指南
