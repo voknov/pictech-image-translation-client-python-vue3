@@ -94,8 +94,8 @@ export default {
 
       if (existingIndex !== -1) {
         // 如果 RequestId 已存在，则用新数据更新它（通常发生在保存操作后）
-        // 使用 Vue.set 确保响应式更新
-        this.$set(this.translationHistory, existingIndex, apiResponse);
+        // Vue 3 可以直接侦测数组索引赋值
+        this.translationHistory[existingIndex] = apiResponse;
         console.log(`[App.vue] 历史记录更新于索引 #${existingIndex}`);
       } else {
         // 如果是新的 RequestId，则添加到历史记录数组的开头

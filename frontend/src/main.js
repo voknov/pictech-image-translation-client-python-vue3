@@ -1,6 +1,6 @@
 // src/main.js
 
-import Vue from 'vue'
+import { createApp } from 'vue'
 import App from './App.vue'
 
 // 1. 导入你的插件包
@@ -22,14 +22,11 @@ const userApiConfig = {
   UPLOAD_IO_IN_PAINT_IMG_API: '/api/translate/uploadIoInpaintImage',
 };
 
-// 4. 使用 Vue.use() 来安装插件
-// 并将用户的API配置作为选项传入
-Vue.use(ImageEditorPlugin, {
+// 4. 创建 Vue 3 应用并安装插件
+const app = createApp(App)
+
+app.use(ImageEditorPlugin, {
   apiConfig: userApiConfig
-});
+})
 
-Vue.config.productionTip = false
-
-new Vue({
-  render: h => h(App),
-}).$mount('#app')
+app.mount('#app')
