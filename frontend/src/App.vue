@@ -28,9 +28,8 @@
           3. 使用 @save-result="handleSaveResult" 监听子组件触发的 saveTranslationResult 事件。
         -->
         <ImageEditor
-          v-if="currentEditorData"
-          :key="currentEditorData.RequestId"
-          :initial-data="currentEditorData"
+          :key="(currentEditorData && currentEditorData.RequestId) || 'empty'"
+          :initial-data="currentEditorData || emptyEditorData"
           @new-result="handleNewResult"
           @save-result="handleSaveResult"
           :button-config="myButtonConfig"
@@ -41,8 +40,6 @@
 </template>
 
 <script>
-// 【Vue改造】导入 ImageEditor 组件
-
 export default {
   name: 'App',
   data() {
@@ -52,36 +49,22 @@ export default {
       activeHistoryIndex: -1,
       // 【Vue改造-状态管理】用于传递给子组件的数据
       currentEditorData: null,
-      // 【Vue改造-状态管理】页面加载时使用的初始数据
+      // 编辑器初始空白状态数据（无图片），等待用户上传
+      emptyEditorData: { Data: {} },
       myButtonConfig: {
-          upload: true,
-          addText: true,
-          restore: true, // 禁用局部恢复
-          undo: true,
-          redo: true,
-          erase: true,   // 是否禁用擦除
-          export: true,
-          save: true,
-          reset: true,
-          compare: true,
-        },
-       initialApiResponse: {
-	      Code: 200,
-	      Data: {
-	        FinalImageUrl: "https://pictech.top/pctccloud/pictech-api/afc19672d337880aa0a30360d058859f/20260828/1787884649044/20260828103724_151_final.webp",
-	        InPaintingUrl: "https://pictech.top/pctccloud/pictech-api/afc19672d337880aa0a30360d058859f/20260828/1787884649044/20260828103724_151_inpaint.png",
-	        SourceUrl: "https://pictech.top/pctccloud/pictechapi-translate/76ed13c2f50bf709b3b7fe67f0dd02c2/2026/08/28/20260828103724_151_a58c23ac.png",
-	        TemplateJson: "{\"version\": \"5.3.0\", \"fabritor_schema_version\": 3, \"clipPath\": {\"type\": \"rect\", \"version\": \"5.3.0\", \"left\": 0, \"top\": 0, \"width\": 1980, \"height\": 2000, \"fill\": \"transparent\", \"selectable\": \"true\", \"hasControls\": \"true\"}, \"objects\": [{\"type\": \"rect\", \"version\": \"5.3.0\", \"originX\": \"left\", \"originY\": \"top\", \"left\": 0, \"top\": 0, \"width\": 1980, \"height\": 2000, \"fill\": \"transparent\", \"selectable\": \"false\", \"hasControls\": \"false\", \"id\": \"pictech\"}, {\"type\": \"f-image\", \"version\": \"5.3.0\", \"left\": 0, \"top\": 0, \"width\": 1980, \"height\": 2000, \"id\": \"pictech_1787884658217\", \"selectable\": \"true\", \"hasControls\": \"true\", \"objects\": [{\"type\": \"image\", \"version\": \"5.3.0\", \"originX\": \"left\", \"originY\": \"top\", \"left\": 0, \"top\": 0, \"width\": 1980, \"height\": 2000, \"src\": \"https://pictech.top/pctccloud/pictech-api/afc19672d337880aa0a30360d058859f/20260828/1787884649044/20260828103724_151_inpaint.png\", \"crossOrigin\": \"null\"}, {\"type\": \"rect\", \"version\": \"5.3.0\", \"originX\": \"left\", \"originY\": \"top\", \"left\": 0, \"top\": 0, \"width\": 1980, \"height\": 2000, \"fill\": \"#00000000\", \"paintFirst\": \"fill\"}]}, {\"type\": \"f-text\", \"version\": \"5.3.0\", \"originX\": \"left\", \"originY\": \"center\", \"left\": 1303.0, \"top\": 354.5, \"width\": 778.1666666666667, \"fill\": \"#76AFC8\", \"stroke\": \"null\", \"strokeWidth\": 0, \"paintFirst\": \"stroke\", \"angle\": 0.0, \"scaleX\": 0.96, \"scaleY\": 1, \"charSpacing\": -40, \"fontFamily\": \"Noto Sans SC\", \"fontWeight\": \"bold\", \"fontSize\": 111.0, \"text\": \"Foggy Brown\", \"itext\": \"1\", \"originalText\": \"雾冷棕\", \"targetLang\": \"ENG\", \"textAlign\": \"left\", \"lineHeight\": 0.95, \"styles\": [], \"pathAlign\": \"center\", \"minWidth\": 20, \"splitByGrapheme\": false, \"voknovPreventInitialWrap\": true, \"voknovVerticalCjkUpright\": false, \"voknovWritingMode\": \"horizontal-or-rotated\", \"voknovOriginalAngle\": null, \"voknovRenderAngle\": null, \"id\": \"txt_7aba3bb6-a289-11f1-a7a3-d0946605de23\", \"selectable\": \"true\", \"hasControls\": \"true\"}, {\"type\": \"f-text\", \"version\": \"5.3.0\", \"originX\": \"left\", \"originY\": \"center\", \"left\": 1331.0, \"top\": 585.5, \"width\": 529.76, \"fill\": \"#7EB1CA\", \"stroke\": \"null\", \"strokeWidth\": 0, \"paintFirst\": \"stroke\", \"angle\": 0.0, \"scaleX\": 1.0, \"scaleY\": 1, \"charSpacing\": 18, \"fontFamily\": \"Noto Sans SC\", \"fontWeight\": \"bold\", \"fontSize\": 83.0, \"text\": \"No fading\", \"itext\": \"1\", \"originalText\": \"无需褪色\", \"targetLang\": \"ENG\", \"textAlign\": \"left\", \"lineHeight\": 0.95, \"styles\": [], \"pathAlign\": \"center\", \"minWidth\": 20, \"splitByGrapheme\": false, \"voknovPreventInitialWrap\": true, \"voknovVerticalCjkUpright\": false, \"voknovWritingMode\": \"horizontal-or-rotated\", \"voknovOriginalAngle\": null, \"voknovRenderAngle\": null, \"id\": \"txt_7aba3efe-a289-11f1-a7a3-d0946605de23\", \"selectable\": \"true\", \"hasControls\": \"true\"}, {\"type\": \"f-text\", \"version\": \"5.3.0\", \"originX\": \"left\", \"originY\": \"center\", \"left\": 1206.0, \"top\": 742.5, \"width\": 753.9583333333334, \"fill\": \"#477F8F\", \"stroke\": \"null\", \"strokeWidth\": 0, \"paintFirst\": \"stroke\", \"angle\": 0.0, \"scaleX\": 0.96, \"scaleY\": 1, \"charSpacing\": -32, \"fontFamily\": \"Noto Sans SC\", \"fontWeight\": \"bold\", \"fontSize\": 40.0, \"text\": \"Suitable for skin tones: All skin tones\", \"itext\": \"1\", \"originalText\": \"适合肤色：全部肤色\", \"targetLang\": \"ENG\", \"textAlign\": \"left\", \"lineHeight\": 0.95, \"styles\": [], \"pathAlign\": \"center\", \"minWidth\": 20, \"splitByGrapheme\": false, \"voknovPreventInitialWrap\": true, \"voknovVerticalCjkUpright\": false, \"voknovWritingMode\": \"horizontal-or-rotated\", \"voknovOriginalAngle\": null, \"voknovRenderAngle\": null, \"id\": \"txt_7aba420a-a289-11f1-a7a3-d0946605de23\", \"selectable\": \"true\", \"hasControls\": \"true\"}, {\"type\": \"f-text\", \"version\": \"5.3.0\", \"originX\": \"left\", \"originY\": \"center\", \"left\": 1206.0, \"top\": 871.0, \"width\": 670.1020408163265, \"fill\": \"#487E8D\", \"stroke\": \"null\", \"strokeWidth\": 0, \"paintFirst\": \"stroke\", \"angle\": 0.0, \"scaleX\": 0.98, \"scaleY\": 1, \"charSpacing\": -24, \"fontFamily\": \"Noto Sans SC\", \"fontWeight\": \"bold\", \"fontSize\": 40.0, \"text\": \"Suitable for age: 18-38 years old\", \"itext\": \"1\", \"originalText\": \"适合年龄：18-38岁\", \"targetLang\": \"ENG\", \"textAlign\": \"left\", \"lineHeight\": 0.95, \"styles\": [], \"pathAlign\": \"center\", \"minWidth\": 20, \"splitByGrapheme\": false, \"voknovPreventInitialWrap\": true, \"voknovVerticalCjkUpright\": false, \"voknovWritingMode\": \"horizontal-or-rotated\", \"voknovOriginalAngle\": null, \"voknovRenderAngle\": null, \"id\": \"txt_7aba448a-a289-11f1-a7a3-d0946605de23\", \"selectable\": \"true\", \"hasControls\": \"true\"}, {\"type\": \"f-text\", \"version\": \"5.3.0\", \"originX\": \"left\", \"originY\": \"center\", \"left\": 975.0, \"top\": 1000.0, \"width\": 80.0, \"fill\": \"#D1C7B7\", \"stroke\": \"null\", \"strokeWidth\": 0, \"paintFirst\": \"stroke\", \"angle\": 0.0, \"scaleX\": 1.0, \"scaleY\": 1, \"charSpacing\": 18, \"fontFamily\": \"Noto Sans SC\", \"fontWeight\": \"bold\", \"fontSize\": 27.0, \"text\": \"Ten\", \"itext\": \"1\", \"originalText\": \"十\", \"targetLang\": \"ENG\", \"textAlign\": \"left\", \"lineHeight\": 0.95, \"styles\": [], \"pathAlign\": \"center\", \"minWidth\": 20, \"splitByGrapheme\": false, \"voknovPreventInitialWrap\": true, \"voknovVerticalCjkUpright\": false, \"voknovWritingMode\": \"horizontal-or-rotated\", \"voknovOriginalAngle\": null, \"voknovRenderAngle\": null, \"id\": \"txt_7aba45ac-a289-11f1-a7a3-d0946605de23\", \"selectable\": \"true\", \"hasControls\": \"true\"}, {\"type\": \"f-text\", \"version\": \"5.3.0\", \"originX\": \"left\", \"originY\": \"center\", \"left\": 1209.0, \"top\": 986.0, \"width\": 758.2978723404257, \"fill\": \"#498292\", \"stroke\": \"#C4DBE3\", \"strokeWidth\": 4.058, \"paintFirst\": \"stroke\", \"angle\": 0.0, \"scaleX\": 0.94, \"scaleY\": 1, \"charSpacing\": -40, \"fontFamily\": \"Noto Sans SC\", \"fontWeight\": \"bold\", \"fontSize\": 40.0, \"text\": \"Enhances complexion, brightens skin\", \"itext\": \"1\", \"originalText\": \"颜色特点：衬肤显白\", \"targetLang\": \"ENG\", \"textAlign\": \"left\", \"lineHeight\": 0.95, \"styles\": [], \"pathAlign\": \"center\", \"minWidth\": 20, \"splitByGrapheme\": false, \"voknovPreventInitialWrap\": true, \"voknovVerticalCjkUpright\": false, \"voknovWritingMode\": \"horizontal-or-rotated\", \"voknovOriginalAngle\": null, \"voknovRenderAngle\": null, \"id\": \"txt_7aba4822-a289-11f1-a7a3-d0946605de23\", \"selectable\": \"true\", \"hasControls\": \"true\"}, {\"type\": \"f-text\", \"version\": \"5.3.0\", \"originX\": \"center\", \"originY\": \"center\", \"left\": 1576.0, \"top\": 1390.0, \"width\": 495.0, \"fill\": \"#F7F7F6\", \"stroke\": \"null\", \"strokeWidth\": 0, \"paintFirst\": \"stroke\", \"angle\": 0.0, \"scaleX\": 1.0, \"scaleY\": 1, \"charSpacing\": 0, \"fontFamily\": \"Noto Sans SC\", \"fontWeight\": \"bold\", \"fontSize\": 63.0, \"text\": \"Foggy Brown\", \"itext\": \"1\", \"originalText\": \"雾冷棕\", \"targetLang\": \"ENG\", \"textAlign\": \"center\", \"lineHeight\": 0.95, \"styles\": [], \"pathAlign\": \"center\", \"minWidth\": 20, \"splitByGrapheme\": false, \"voknovPreventInitialWrap\": true, \"voknovVerticalCjkUpright\": false, \"voknovWritingMode\": \"horizontal-or-rotated\", \"voknovOriginalAngle\": null, \"voknovRenderAngle\": null, \"id\": \"txt_7aba499e-a289-11f1-a7a3-d0946605de23\", \"selectable\": \"true\", \"hasControls\": \"true\"}, {\"type\": \"f-text\", \"version\": \"5.3.0\", \"originX\": \"center\", \"originY\": \"center\", \"left\": 1541.0, \"top\": 1761.0, \"width\": 858.6666666666667, \"fill\": \"#468097\", \"stroke\": \"null\", \"strokeWidth\": 0, \"paintFirst\": \"stroke\", \"angle\": 0.0, \"scaleX\": 0.96, \"scaleY\": 1, \"charSpacing\": -40, \"fontFamily\": \"Noto Sans SC\", \"fontWeight\": \"bold\", \"fontSize\": 72.0, \"text\": \"Buy One, Get One Free\", \"itext\": \"1\", \"originalText\": \"买一盒送一盒\", \"targetLang\": \"ENG\", \"textAlign\": \"center\", \"lineHeight\": 0.95, \"styles\": [], \"pathAlign\": \"center\", \"minWidth\": 20, \"splitByGrapheme\": false, \"voknovPreventInitialWrap\": true, \"voknovVerticalCjkUpright\": false, \"voknovWritingMode\": \"horizontal-or-rotated\", \"voknovOriginalAngle\": null, \"voknovRenderAngle\": null, \"id\": \"txt_7aba4b7e-a289-11f1-a7a3-d0946605de23\", \"selectable\": \"true\", \"hasControls\": \"true\"}]}"
-	      },
-	      Message: "翻译完成",
-	      RequestId: "c0b49143-0c92-429f-a54a-2c7288864578"
-      }
+        upload: true,
+        addText: true,
+        restore: true, // 局部恢复
+        crop: true,    // 裁剪
+        undo: true,
+        redo: true,
+        erase: true,   // 擦除
+        export: true,
+        save: true,
+        reset: true,
+        compare: true,  // 对照编辑
+      },
     };
-  },
-  // 【Vue改造-生命周期】在 mounted 钩子中加载初始数据
-  mounted() {
-    // 页面加载时，将初始数据添加到历史记录中
-    this.addHistoryItem(this.initialApiResponse, true);
   },
   methods: {
     /**
