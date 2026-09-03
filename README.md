@@ -1,9 +1,9 @@
 # 📘 PicTech 图片翻译编辑器 - Python 后端版
 
-本项目是一个集成在线图片编辑与多语言翻译功能的全栈解决方案。前端使用 Vue 3.5，并集成 `vue-pic-tech-editor 2.0.0`；后端由 Python FastAPI 驱动，提供翻译、保存、导出和擦除 API，同时托管编译后的前端静态文件，实现前后端一体化部署。
+本项目是一个集成在线图片编辑与多语言翻译功能的全栈解决方案。前端使用 Vue 3.5，并集成 `vue-pic-tech-editor 2.0.2`；后端由 Python FastAPI 驱动，提供翻译、保存、导出和擦除 API，同时托管编译后的前端静态文件，实现前后端一体化部署。
 
 ## ✨ 项目特点
-- **前端**：基于 Vue 3.5、Vue CLI 5 和 `vue-pic-tech-editor 2.0.0`，提供响应式图片编辑与翻译界面。
+- **前端**：基于 Vue 3.5、Vue CLI 5 和 `vue-pic-tech-editor 2.0.2`，支持裁剪、局部恢复、文字恢复、擦除、导出和保存。
 - **后端**：Python 3.8+ 与 FastAPI，高效处理异步 API 请求。
 - **API 客户端**：内置与第三方 PicTech 图片处理服务的通信客户端。
 - **一体化部署**：FastAPI 后端直接提供前端静态资源，简化部署流程。
@@ -50,6 +50,7 @@
           upload: true,    // 启用文件上传按钮，允许用户上传图片
           addText: true,   // 启用添加文本按钮，支持在图片上添加翻译文本
           restore: true,   // 启用局部恢复按钮，用于恢复擦除区域
+          crop: true,      // 启用裁剪按钮，默认选区覆盖完整图片
           undo: true,      // 启用撤销按钮，回退上一步操作
           redo: true,      // 启用重做按钮，恢复已撤销的操作
           erase: true,     // 启用擦除按钮，支持擦除图片指定区域
@@ -64,6 +65,30 @@
   - **main.js**：使用 Vue 3 的 `createApp()` 创建应用，通过 `app.use(ImageEditorPlugin, { apiConfig })` 注册插件，并引入插件 CSS。
 - **vue.config.js**：Vue CLI 配置文件，已配置将构建产物输出到 `frontend/dist/` 目录，并由 FastAPI 后端托管。
 - **dist/**：前端编译后生成的静态文件（HTML、CSS、JS），由 `npm run build` 自动生成，供 FastAPI 后端直接提供。
+
+### 🆕 2.0.2 接入说明
+
+- `App.vue` 不再依赖硬编码的演示图片，使用 `{ Data: {} }` 创建空白编辑器，首次进入页面即可上传图片。
+- `buttonConfig.crop` 控制裁剪入口；进入裁剪时选区默认覆盖整张图片，可拖动单独的边或角调整范围。
+- 局部恢复与文字恢复由编辑器内部处理：文字状态仅显示“恢复原图”，恢复为原图后仅显示“恢复文字”。
+- 擦除、局部恢复生成的新底图通过 `UPLOAD_IO_IN_PAINT_IMG_API` 上传，FastAPI 返回 `/uploads/...` 地址。
+- 开发服务器已代理 `/api` 和 `/uploads` 到 `http://localhost:8000`，保证本地开发时接口和恢复图片都可正常访问。
+
+插件注册与接口配置位于 `frontend/src/main.js`：
+
+```javascript
+app.use(ImageEditorPlugin, {
+  apiConfig: {
+    UPLOAD_API: '/api/translate/upload',
+    URL_API: '/api/translate/url',
+    RESULT_API: '/api/translate/result',
+    SAVE_API: '/api/translate/save',
+    UPLOAD_EXPORT_IMG_API: '/api/translate/uploadExportedImage',
+    IO_IN_PAINT_API: '/api/translate/iopaint',
+    UPLOAD_IO_IN_PAINT_IMG_API: '/api/translate/uploadIoInpaintImage',
+  },
+})
+```
 
 ### 📄 API 接口
 所有后端接口定义在 `backend/app/routers/translate.py` 中，根路径为 `/api/translate`。
@@ -125,7 +150,7 @@ UPLOAD_DIR="uploads"
 当前前端核心版本：
 
 - `vue@3.5.x`
-- `vue-pic-tech-editor@2.0.0`
+- `vue-pic-tech-editor@2.0.2`
 - `@vue/compiler-sfc@3.5.x`
 
 #### 3.1 安装依赖
@@ -186,6 +211,10 @@ http://localhost:8000
       devServer: {
         proxy: {
           '/api': {
+            target: 'http://localhost:8000',
+            changeOrigin: true,
+          },
+          '/uploads': {
             target: 'http://localhost:8000',
             changeOrigin: true,
           },
