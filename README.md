@@ -1,9 +1,9 @@
 # 📘 PicTech 图片翻译编辑器 - Python 后端版
 
-本项目是一个集成在线图片编辑与多语言翻译功能的全栈解决方案。前端使用 Vue 3.5，并集成 `vue-pic-tech-editor 2.0.2`；后端由 Python FastAPI 驱动，提供翻译、保存、导出和擦除 API，同时托管编译后的前端静态文件，实现前后端一体化部署。
+本项目是一个集成在线图片编辑与多语言翻译功能的全栈解决方案。前端使用 Vue 3.5，并集成 `vue-pic-tech-editor 2.0.4`；后端由 Python FastAPI 驱动，提供翻译、保存、导出和擦除 API，同时托管编译后的前端静态文件，实现前后端一体化部署。
 
 ## ✨ 项目特点
-- **前端**：基于 Vue 3.5、Vue CLI 5 和 `vue-pic-tech-editor 2.0.3`，支持裁剪、局部恢复、文字恢复、擦除、导出和保存。
+- **前端**：基于 Vue 3.5、Vue CLI 5 和 `vue-pic-tech-editor 2.0.4`，支持裁剪、局部恢复、文字恢复、擦除、导出和保存。
 - **后端**：Python 3.8+ 与 FastAPI，高效处理异步 API 请求。
 - **API 客户端**：内置与第三方 PicTech 图片处理服务的通信客户端。
 - **一体化部署**：FastAPI 后端直接提供前端静态资源，简化部署流程。
@@ -66,7 +66,7 @@
 - **vue.config.js**：Vue CLI 配置文件，已配置将构建产物输出到 `frontend/dist/` 目录，并由 FastAPI 后端托管。
 - **dist/**：前端编译后生成的静态文件（HTML、CSS、JS），由 `npm run build` 自动生成，供 FastAPI 后端直接提供。
 
-### 🆕 2.0.2 接入说明
+### 🆕 2.0.3 接入说明
 
 - `App.vue` 不再依赖硬编码的演示图片，使用 `{ Data: {} }` 创建空白编辑器，首次进入页面即可上传图片。
 - `buttonConfig.crop` 控制裁剪入口；进入裁剪时选区默认覆盖整张图片，可拖动单独的边或角调整范围。
@@ -150,7 +150,7 @@ UPLOAD_DIR="uploads"
 当前前端核心版本：
 
 - `vue@3.5.x`
-- `vue-pic-tech-editor@2.0.2`
+- `vue-pic-tech-editor@2.0.3`
 - `@vue/compiler-sfc@3.5.x`
 
 #### 3.1 安装依赖
